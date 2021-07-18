@@ -6,11 +6,14 @@ import io
 import os
 import shutil
 
+Entrez.email = 'htodorov@mit.edu'
+Entrez.api_key = '626a1e4c8d34bd70f674b567402c62d85108'
+
 DEFAULT_SEARCH_PARAMETERS = {
     'usehistory': ' Y',
     'rettype': 'xml',
     'retmode': 'text',
-    'retmax': 100
+    'retmax': 7326
 }
 
 
