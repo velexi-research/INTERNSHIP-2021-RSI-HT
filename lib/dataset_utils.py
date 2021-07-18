@@ -239,6 +239,11 @@ def is_valid_seq(seq):
     return True
 
 
+def serialize_json(d, location):
+    with open(location, 'w') as file:
+        json.dump(d, file, indent=4)
+
+
 def main():
     gene_name = 'brca2'
     ref_code = 'NC_000013.11'
@@ -251,8 +256,7 @@ def main():
     mutations_dict = get_mutations_dict(records_location, ref_code)
     significance_dict = get_significance_dict(records_location)
 
-    encoded_dict = encode_significance_dict(significance_dict)
-    mutations_dict, encoded_dict = intersect_dicts(mutations_dict, encoded_dict)
+    mutations_dict, significance_dict = intersect_dicts(mutations_dict, significance_dict)
 
     gene_data = preprocess_gene_data(gene_location)
 
@@ -278,6 +282,9 @@ def main():
             if not os.path.exists(current_save_location):
                 encoded_mutations_np = np.asarray(mutations_list)
                 np.save(current_save_location, encoded_mutations_np)
+
+    mutations_dict, significance_dict = intersect_dicts(mutations_dict, significance_dict)
+    serialize_json(significance_dict, os.path.join(gene_dir, 'significance.json'))
 
 
 if __name__ == '__main__':
