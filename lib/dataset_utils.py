@@ -232,6 +232,23 @@ def encode_seq(seq):
     return encoding
 
 
+def encode_significance_dict(significance_dict):
+    encoded_significance_dict = {}
+    for key in list(significance_dict.keys()):
+        s = significance_dict[key]
+
+        if 'benign' in s and 'pathogenic' in s or 'uncertain' in s:
+            significance_dict.pop(key)
+        else:
+            if 'benign' in s:
+                encoded_significance_dict[key] = 0
+            elif 'pathogenic' in s:
+                encoded_significance_dict[key] = 1
+            else:
+                significance_dict.pop(key)
+    return encoded_significance_dict
+
+
 def is_valid_seq(seq):
     for base in seq:
         if base not in list(BASE_ENCODINGS.keys()):
