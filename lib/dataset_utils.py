@@ -244,6 +244,24 @@ def serialize_json(d, location):
         json.dump(d, file, indent=4)
 
 
+def train_test_split(x, y, test_size=0.1, shuffle=False):
+    if len(x) != len(y):
+        raise ValueError('Training data size mismatch between inputs and labels!')
+
+    if shuffle:
+        temp = list(zip(x, y))
+        random.shuffle(temp)
+        x, y = zip(*temp)
+
+    num_samples = len(x)
+    split_index = int(num_samples*(1-test_size))
+
+    x_train, y_train = x[:split_index], y[:split_index]
+    x_test, y_test = x[split_index:], y[split_index:]
+
+    return (x_train, y_train), (x_test, y_test)
+
+
 def main():
     gene_name = 'brca2'
     ref_code = 'NC_000013.11'
