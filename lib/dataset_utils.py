@@ -26,9 +26,9 @@ SIGNIFICANCE_LIST = [
 
 BASE_ENCODINGS = {
     'A': 0,
-    'T': 1,
-    'C': 2,
-    'G': 3,
+    'C': 1,
+    'G': 2,
+    'T': 3,
 }
 
 
@@ -213,7 +213,7 @@ def apply_mutation(mutation, ref_gene_data):
             return None, mutation_info
 
 
-def get_random_mutated_k_mer(seq, mutation_info, k, ref_gene_start_index):
+def random_mutated_k_mer(seq, mutation_info, k, ref_gene_start_index):
     x = random.randint(0, int(k / 2))
     if len(mutation_info.keys()) == 4:
         index = int((mutation_info['start_index']+mutation_info['end_index'])/2-ref_gene_start_index)
@@ -223,12 +223,35 @@ def get_random_mutated_k_mer(seq, mutation_info, k, ref_gene_start_index):
     return seq[index-x:index+k-x]
 
 
-def encode_seq(seq):
+def encode_base_seq(seq):
     encoding = np.zeros((len(seq), 4))
 
     for base, e in zip(seq, encoding):
         e[BASE_ENCODINGS[base]] = 1
 
+    return encoding
+
+
+def get_codon_encoding_dict():
+    bases = list(BASE_ENCODINGS.keys())
+    num_bases = len(bases)
+    codons_list = []
+
+    for i in range(num_bases):
+        for j in range(num_bases):
+            for k in range(num_bases):
+                codon = bases[i] + bases[j] + bases[k]
+                codons_list.append(codon)
+
+    codons_indices = [x for x in range(len(codons_list))]
+    return dict(zip(codons_list, codons_indices))
+
+
+def encode_codon_seq(seq, encoding_dict):
+    encoding = np.zeros((len(seq)-2, len(encoding_dict.keys())))
+    for i in range(0, len(seq)-2):
+        k_mer = seq[i:i+3]
+        encoding[i][encoding_dict[k_mer]] = 1
     return encoding
 
 
@@ -282,7 +305,6 @@ def train_test_split(x, y, test_size=0.1, shuffle=False):
 def main():
     gene_name = 'brca2'
     ref_code = 'NC_000013.11'
-    k = 500
 
     gene_dir = os.path.join('../data', gene_name)
     records_location = os.path.join(gene_dir, 'records.json')
@@ -296,7 +318,8 @@ def main():
     gene_data = preprocess_gene_data(gene_location)
 
     mutations_keys = list(mutations_dict.keys())
-    seq_save_location = os.path.join(gene_dir, 'mutations/np/')
+    seq_save_location = os.path.join(gene_dir, 'mutations/np_codon_full/')
+    encoding_dict = get_codon_encoding_dict()
 
     for key in mutations_keys:
         mutations_list = []
@@ -308,8 +331,7 @@ def main():
                 mutations_dict.pop(key)
                 break
 
-            seq_k_mer = get_random_mutated_k_mer(seq, mutation_info, k, gene_data['start_index'])
-            seq_encoding = encode_seq(seq_k_mer)
+            seq_encoding = encode_codon_seq(seq, encoding_dict)
 
             mutations_list.append(seq_encoding)
 
