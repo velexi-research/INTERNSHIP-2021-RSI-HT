@@ -5,7 +5,6 @@ import numpy as np
 import re
 import random
 import os
-from matplotlib import pyplot as plt
 
 PARSER_ARGS = [
     {'name': '--db', 'type': str, 'default': 'snp'},
@@ -344,7 +343,6 @@ def main():
 
     mutations_keys = list(mutations_dict.keys())
     seq_save_location = os.path.join(gene_dir, 'mutations/np_full/')
-    encoding_dict = get_codon_encoding_dict()
     mutation_info_list = []
 
     for key in mutations_keys:
@@ -356,8 +354,6 @@ def main():
             if seq is None:
                 mutations_dict.pop(key)
                 break
-
-            seq_k_mer = random_mutated_k_mer(seq, mutation_info, k=1002, ref_gene_start_index=gene_data['start_index'])
 
             if len(seq) == 0:
                 break
