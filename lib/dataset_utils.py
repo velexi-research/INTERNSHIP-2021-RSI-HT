@@ -5,6 +5,7 @@ import numpy as np
 import re
 import random
 import os
+from matplotlib import pyplot as plt
 
 PARSER_ARGS = [
     {'name': '--db', 'type': str, 'default': 'snp'},
@@ -302,6 +303,30 @@ def train_test_split(x, y, test_size=0.1, shuffle=False):
     return (x_train, y_train), (x_test, y_test)
 
 
+def mutation_density(mutation_info_list, ref_gene):
+    gene_start_index = ref_gene['start_index']
+    gene_end_index = ref_gene['end_index']
+
+    density = [0] * (gene_end_index - gene_start_index + 1)
+
+    for mutation_info in mutation_info_list:
+        if len(mutation_info) == 3:
+            mutation_index = mutation_info['index'] - gene_start_index
+            density[mutation_index] += 1
+
+        else:
+            if mutation_info['start_index'] - gene_start_index < 0:
+                continue
+
+            mutation_start_index = mutation_info['start_index'] - gene_start_index
+            mutation_end_index = mutation_info['end_index'] - gene_start_index
+
+            for i in range(mutation_start_index, mutation_end_index+1):
+                density[i] += 1
+
+    return density
+
+
 def main():
     gene_name = 'brca2'
     ref_code = 'NC_000013.11'
@@ -315,30 +340,36 @@ def main():
 
     mutations_dict, significance_dict = intersect_dicts(mutations_dict, significance_dict)
 
-    gene_data = preprocess_gene_data(gene_location)
+    ref_gene = preprocess_gene_data(gene_location)
 
     mutations_keys = list(mutations_dict.keys())
-    seq_save_location = os.path.join(gene_dir, 'mutations/np_codon_full/')
+    seq_save_location = os.path.join(gene_dir, 'mutations/np_full/')
     encoding_dict = get_codon_encoding_dict()
+    mutation_info_list = []
 
     for key in mutations_keys:
         mutations_list = []
 
         for index, mutation in enumerate(mutations_dict[key]):
-            seq, mutation_info = apply_mutation(mutation, gene_data)
+            seq, mutation_info = apply_mutation(mutation, ref_gene)
 
             if seq is None:
                 mutations_dict.pop(key)
                 break
 
-            seq_encoding = encode_codon_seq(seq, encoding_dict)
+            seq_k_mer = random_mutated_k_mer(seq, mutation_info, k=1002, ref_gene_start_index=gene_data['start_index'])
 
+            if len(seq) == 0:
+                break
+
+            mutation_info_list.append(mutation_info)
+
+            seq_encoding = encode_base_seq(seq)
             mutations_list.append(seq_encoding)
 
             current_save_location = os.path.join(seq_save_location, key + '.npy')
-            if not os.path.exists(current_save_location):
-                encoded_mutations_np = np.asarray(mutations_list)
-                np.save(current_save_location, encoded_mutations_np)
+            encoded_mutations_np = np.asarray(mutations_list)
+            np.save(current_save_location, encoded_mutations_np)
 
     mutations_dict, significance_dict = intersect_dicts(mutations_dict, significance_dict)
     serialize_json(significance_dict, os.path.join(gene_dir, 'significance.json'))
