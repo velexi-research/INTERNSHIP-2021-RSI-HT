@@ -4,6 +4,7 @@ numpy~=1.21.0
 pandas
 scikit-learn
 scipy
+torch
 # seaborn
 
 # Bioinformatics
