@@ -62,5 +62,5 @@ class TaxonomyCNN(nn.Module, ABC):
 
         x = self.dense2(x)
 
-        output = torch.sigmoid(x)
+        output = F.softmax(x)
         return output
