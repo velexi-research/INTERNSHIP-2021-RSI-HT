@@ -5,6 +5,7 @@ import numpy as np
 import re
 import random
 import os
+import copy
 
 PARSER_ARGS = [
     {'name': '--db', 'type': str, 'default': 'snp'},
@@ -198,7 +199,7 @@ def apply_mutation(mutation, ref_gene_data):
             print('Unknown operation type! ')
             return -1
 
-        return seq, mutation_info
+        return None, mutation_info
     else:
         mutation_info = get_point_mutation_info(mutation)
         mutation_index = mutation_info['index'] - seq_start_index
@@ -223,11 +224,24 @@ def random_mutated_k_mer(seq, mutation_info, k, ref_gene_start_index):
     return seq[index-x:index+k-x]
 
 
-def encode_base_seq(seq):
+def random_k_mer(seq, k):
+    pivot = int(len(seq)/2)
+    index = random.randint(0, len(seq))
+
+    if index < pivot:
+        return seq[index:index+k]
+    else:
+        return seq[index-k:index]
+
+
+def encode_base_seq(seq, transpose=False):
     encoding = np.zeros((len(seq), 4))
 
     for base, e in zip(seq, encoding):
         e[BASE_ENCODINGS[base]] = 1
+
+    if transpose:
+        encoding = np.transpose(encoding)
 
     return encoding
 
@@ -302,6 +316,24 @@ def train_test_split(x, y, test_size=0.1, shuffle=False):
     return (x_train, y_train), (x_test, y_test)
 
 
+def split_dataset(dataset, test_size, shuffle):
+    x = dataset.x
+    y = dataset.y
+
+    train_set = dataset
+    test_set = copy.copy(dataset)
+
+    (x_train, y_train), (x_test, y_test) = train_test_split(x, y, test_size, shuffle)
+
+    train_set.x = x_train
+    train_set.y = y_train
+
+    test_set.x = x_test
+    test_set.y = y_test
+
+    return train_set, test_set
+
+
 def mutation_density(mutation_info_list, ref_gene):
     gene_start_index = ref_gene['start_index']
     gene_end_index = ref_gene['end_index']
@@ -342,13 +374,15 @@ def main():
     ref_gene = preprocess_gene_data(gene_location)
 
     mutations_keys = list(mutations_dict.keys())
-    seq_save_location = os.path.join(gene_dir, 'mutations/np_full/')
+    seq_save_location = os.path.join(gene_dir, 'mutations/np_test/')
     mutation_info_list = []
 
     for key in mutations_keys:
         mutations_list = []
 
         for index, mutation in enumerate(mutations_dict[key]):
+            if index > 0:
+                break
             seq, mutation_info = apply_mutation(mutation, ref_gene)
 
             if seq is None:
@@ -365,7 +399,9 @@ def main():
 
             current_save_location = os.path.join(seq_save_location, key + '.npy')
             encoded_mutations_np = np.asarray(mutations_list)
-            np.save(current_save_location, encoded_mutations_np)
+
+            if len(encoded_mutations_np.shape) == 3:
+                np.save(current_save_location, encoded_mutations_np)
 
     mutations_dict, significance_dict = intersect_dicts(mutations_dict, significance_dict)
     serialize_json(significance_dict, os.path.join(gene_dir, 'significance.json'))
