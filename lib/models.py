@@ -53,8 +53,8 @@ def plot_confusion_matrix(cm, classes=datasets.DEFAULT_GENES_DICT):
 
     sns.heatmap(cm, annot=True, cmap="Blues", ax=ax)
 
-    ax.set_xlabel('Predicted labels')
-    ax.set_ylabel('True labels')
+    ax.set_xlabel('Predicted class')
+    ax.set_ylabel('True class')
     ax.xaxis.set_ticklabels(classes)
     ax.yaxis.set_ticklabels(classes)
 
