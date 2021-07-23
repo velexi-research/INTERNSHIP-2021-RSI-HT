@@ -41,7 +41,7 @@ def evaluate_model(model, x, y):
 
 
 def construct_confusion_matrix(y_true, y_pred):
-    cm = confusion_matrix(y_true, y_pred, normalize='predicted')
+    cm = confusion_matrix(y_true, y_pred, normalize='pred')
     return cm
 
 
