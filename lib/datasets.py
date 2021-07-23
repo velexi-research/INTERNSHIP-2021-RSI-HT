@@ -5,6 +5,16 @@ from dataset_utils import split_dataset, encode_base_seq
 import os
 
 
+DEFAULT_GENES_DICT = {
+    'brca1': '672',
+    'brca2': '675',
+    'apc': '324',
+    'pten': '5728',
+    # 'vhl': '7428',
+    # 'cdkn2a': '1029'
+}
+
+
 class Mutations(torch.utils.data.Dataset):
     def __init__(self, location):
         self.location = location
@@ -21,10 +31,14 @@ class Mutations(torch.utils.data.Dataset):
 
 
 class Genes(torch.utils.data.Dataset):
-    def __init__(self, location, k, encoding=encode_base_seq):
+    def __init__(self, location, k, encoding=encode_base_seq, genes_dict=None):
         self.location = location
         self.gene_names = os.listdir(location)
-        self. encoding = encoding
+        self.encoding = encoding
+
+        if genes_dict is None:
+            genes_dict = DEFAULT_GENES_DICT
+        self.genes_dict = genes_dict
 
         self.x = []
         self.y = []
@@ -32,8 +46,9 @@ class Genes(torch.utils.data.Dataset):
         gene_index = 0
 
         for gene in self.gene_names:
-            if gene[0] == '.':
+            if gene not in self.genes_dict.keys():
                 continue
+
             k_mers_location = os.path.join(location, gene + '/k_mers/' + str(k))
             num_k_mers = 0
             for k_mer in os.listdir(k_mers_location):
