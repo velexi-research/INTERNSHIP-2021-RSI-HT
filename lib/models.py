@@ -41,7 +41,7 @@ def evaluate_model(model, x, y):
 
 
 def construct_confusion_matrix(y_true, y_pred):
-    cm = confusion_matrix(y_true, y_pred, normalize='all')
+    cm = confusion_matrix(y_true, y_pred, normalize='predicted')
     return cm
 
 
@@ -49,16 +49,14 @@ def plot_confusion_matrix(cm, classes=datasets.DEFAULT_GENES_DICT):
     if type(classes) == dict:
         classes = list(classes)
 
-    print(classes)
-
     ax = plt.subplot()
 
-    sns.heatmap(cm, annot=True, fmt='g', ax=ax)
+    sns.heatmap(cm, annot=True, cmap="Blues", ax=ax)
 
     ax.set_xlabel('Predicted labels')
     ax.set_ylabel('True labels')
     ax.xaxis.set_ticklabels(classes)
-    ax.yaxis.set_ticklabels(classes[::-1])
+    ax.yaxis.set_ticklabels(classes)
 
     # plt.show()
 
@@ -69,7 +67,8 @@ class TaxonomyCNN(nn.Module, ABC):
         input_channels = dataset[0].size(0)
         seq_len = dataset[0].size(1)
 
-        self.conv1 = nn.Conv1d(in_channels=input_channels, out_channels=output_channels, kernel_size=2, stride=1)
+        self.conv1 = nn.Conv1d(in_channels=input_channels, out_channels=output_channels,
+                               kernel_size=kernel_size, stride=1)
 
         self.pool1 = nn.MaxPool2d(2)
 
