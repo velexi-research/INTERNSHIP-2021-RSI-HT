@@ -261,14 +261,18 @@ def get_codon_encoding_dict():
     return dict(zip(codons_list, codons_indices))
 
 
-def encode_codon_seq(seq, encoding_dict=None):
+def encode_codon_seq(seq, encoding_dict=None, transpose=False):
     if encoding_dict is None:
         encoding_dict = get_codon_encoding_dict()
-    
+
     encoding = np.zeros((len(seq)-2, len(encoding_dict.keys())))
     for i in range(0, len(seq)-2):
         k_mer = seq[i:i+3]
         encoding[i][encoding_dict[k_mer]] = 1
+
+    if transpose:
+        encoding = np.transpose(encoding)
+
     return encoding
 
 
