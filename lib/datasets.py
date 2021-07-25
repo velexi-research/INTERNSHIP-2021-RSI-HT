@@ -10,8 +10,8 @@ DEFAULT_GENES_DICT = {
     'brca2': '675',
     'apc': '324',
     'pten': '5728',
-    # 'vhl': '7428',
-    # 'cdkn2a': '1029'
+    'vhl': '7428',
+    'cdkn2a': '1029'
 }
 
 
@@ -67,6 +67,42 @@ class Genes(torch.utils.data.Dataset):
         k_mer_location = self.x[index]
 
         with open(k_mer_location, 'r') as file:
+            fasta_records = SeqIO.parse(file, 'fasta')
+
+            for record in fasta_records:
+                seq = record.seq
+
+        seq = self.encoding(seq, transpose=True)
+        seq = torch.from_numpy(np.array(seq).astype('float32'))
+
+        return seq
+
+
+class HistoneOccupancy(torch.utils.data.Dataset):
+    def __init__(self, location, encoding=encode_base_seq):
+        self.location = location
+        self.classes = os.listdir(location)
+        self.encoding = encoding
+        self.genes_dict = dict(zip(self.classes, self.classes))
+
+        self.x = []
+        self.y = []
+
+        for c in self.classes:
+            class_location = os.path.join(location, c)
+            for seq_file in os.listdir(class_location):
+                self.x.append(os.path.join(class_location, seq_file))
+            self.y = self.y + ([int(c),]*len(os.listdir(class_location)))
+
+        self.y = np.array(self.y).flatten()
+
+    def __len__(self):
+        return len(self.x)
+
+    def __getitem__(self, index):
+        seq_location = self.x[index]
+
+        with open(seq_location, 'r') as file:
             fasta_records = SeqIO.parse(file, 'fasta')
 
             for record in fasta_records:
