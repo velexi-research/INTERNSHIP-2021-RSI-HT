@@ -49,6 +49,7 @@ def plot_confusion_matrix(cm, classes=datasets.DEFAULT_GENES_DICT):
     if type(classes) == dict:
         classes = list(classes)
 
+    plt.close()
     ax = plt.subplot()
 
     sns.heatmap(cm, annot=True, cmap="Blues", ax=ax)
