@@ -8,7 +8,7 @@ from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
 import seaborn as sns
 from abc import ABC
-
+import os
 
 def load_model_and_dataset(checkpoint_path):
     results = torch.load(checkpoint_path)
@@ -80,7 +80,18 @@ def plot_confusion_matrix(cm, classes=datasets.DEFAULT_GENES_DICT):
     ax.xaxis.set_ticklabels(classes)
     ax.yaxis.set_ticklabels(classes)
 
-    # plt.show()
+
+def save_confusion_matrices(results_location):
+    for checkpoint_location in os.listdir('../results'):
+        model, dataset = load_model_and_dataset(os.path.join('../results', checkpoint_location))
+
+        _, test_set = dataset_utils.split_dataset(dataset, test_size=0.1, shuffle=True)
+        test_labels = torch.from_numpy(np.array(test_set.y))
+        test_acc, y_pred = evaluate_model(model.cpu(), test_set, test_labels)
+
+        cm = construct_confusion_matrix(y_true=test_labels.numpy(), y_pred=y_pred)
+        plot_confusion_matrix(cm=cm, classes=dataset.genes_dict)
+        plt.savefig('../reports/cm/' + results_location[:-3] + '.png')
 
 
 class TaxonomyCNN(nn.Module, ABC):
