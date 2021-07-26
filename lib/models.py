@@ -10,6 +10,7 @@ import seaborn as sns
 from abc import ABC
 import os
 
+
 def load_model_and_dataset(checkpoint_path):
     results = torch.load(checkpoint_path)
     conv1_weight = results['state_dict']['conv1.weight']
@@ -81,7 +82,7 @@ def plot_confusion_matrix(cm, classes=datasets.DEFAULT_GENES_DICT):
     ax.yaxis.set_ticklabels(classes)
 
 
-def save_confusion_matrices(results_location):
+def save_confusion_matrices_plots(results_location):
     for checkpoint_location in os.listdir('../results'):
         model, dataset = load_model_and_dataset(os.path.join('../results', checkpoint_location))
 
