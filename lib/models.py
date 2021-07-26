@@ -2,11 +2,32 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 import datasets
+import dataset_utils
 import numpy as np
 from sklearn.metrics import confusion_matrix
 from matplotlib import pyplot as plt
 import seaborn as sns
 from abc import ABC
+
+
+def load_model_and_dataset(checkpoint_path):
+    results = torch.load(checkpoint_path)
+    conv1_weight = results['state_dict']['conv1.weight']
+
+    if 'genes_dict' in results['args_dict'].keys():
+        if conv1_weight.size(1) == 64:
+            encoding = dataset_utils.encode_codon_seq
+        else:
+            encoding = dataset_utils.encode_base_seq
+
+        dataset = datasets.Genes('../data', k=500, genes_dict=results['args_dict']['genes_dict'], encoding=encoding)
+    else:
+        dataset = datasets.HistoneOccupancy(location='../data/h3_occupancy')
+
+    model = TaxonomyCNN(dataset, kernel_size=conv1_weight.size(2)).eval()
+    model.load_state_dict(results['state_dict'])
+
+    return model, dataset
 
 
 def evaluate_model(model, x, y):
