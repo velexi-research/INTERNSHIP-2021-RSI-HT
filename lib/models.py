@@ -95,6 +95,19 @@ def save_confusion_matrices_plots(results_location):
         plt.savefig('../reports/cm/' + results_location[:-3] + '.png')
 
 
+def one_hot_autoencoder_output(output):
+    output = output.transpose(1, 2)
+    x = torch.zeros_like(output)
+
+    for batch_index in range(output.size(0)):
+        for encoding_index in range(output.size(1)):
+            one_hot_index = int(torch.sum(output[batch_index][encoding_index]).item()) - 1
+            x[batch_index][encoding_index][one_hot_index] = 1
+
+    x = x.transpose(1, 2)
+    return x
+
+
 class TaxonomyCNN(nn.Module, ABC):
     def __init__(self, dataset, output_channels=2, kernel_size=2):
         super(TaxonomyCNN, self).__init__()
@@ -127,3 +140,41 @@ class TaxonomyCNN(nn.Module, ABC):
 
         output = F.softmax(x, dim=1)
         return output
+
+
+class Autoencoder(nn.Module, ABC):
+    def __init__(self, dataset, output_channels=2, kernel_size=2):
+        super(Autoencoder, self).__init__()
+        input_channels = dataset[0].size(0)
+        seq_len = dataset[0].size(1)
+
+        self.encoder_conv = nn.Conv1d(in_channels=input_channels, out_channels=output_channels,
+                                      kernel_size=kernel_size, stride=1)
+        self.encoder_dense = nn.Linear(seq_len//2-1, seq_len//4)
+
+        self.encoder_pool = nn.MaxPool2d(2)
+
+        self.decoder_conv = nn.ConvTranspose1d(in_channels=output_channels-1, out_channels=input_channels,
+                                               kernel_size=kernel_size, stride=1)
+        self.decoder_dense = nn.Linear(seq_len//4, seq_len-2)
+
+    def forward(self, x):
+        x = self.encoder_conv(x)
+        x = F.relu(x)
+        x = self.encoder_pool(x)
+
+        x = self.encoder_dense(x)
+
+        bottleneck = F.relu(x)
+
+        x = self.decoder_dense(bottleneck)
+        x = F.relu(x)
+
+        x = self.decoder_conv(x)
+        x = F.relu(x)
+
+        x = torch.sign(x)
+        x = F.relu(x)
+        output = one_hot_autoencoder_output(x)
+
+        return output, torch.flatten(bottleneck, 1)
