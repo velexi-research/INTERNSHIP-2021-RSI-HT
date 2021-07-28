@@ -1,4 +1,4 @@
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.model_selection import cross_val_score
 import numpy as np
 import json
@@ -27,9 +27,9 @@ for i in range(len(args_dict)):
     y_train = np.array(train_set.y)
     y_test = np.array(test_set.y)
 
-    model = RandomForestClassifier(n_estimators=args_dict[i]['n_estimators'],
-                                   max_depth=args_dict[i]['max_depth'],
-                                   random_state=0)
+    model = GradientBoostingClassifier(n_estimators=args_dict[i]['n_estimators'],
+                                       max_depth=args_dict[i]['max_depth'],
+                                       random_state=0)
 
     scores = cross_val_score(model, x_train, y_train, cv=10)
     print(scores)
