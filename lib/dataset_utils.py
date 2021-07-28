@@ -224,24 +224,23 @@ def random_mutated_k_mer(seq, mutation_info, k, ref_gene_start_index):
     return seq[index-x:index+k-x]
 
 
-def random_k_mer(seq, k):
+def random_k_mer(seq, k, use_mod=False, index=None):
     pivot = int(len(seq)/2)
-    index = random.randint(0, len(seq))
+    if index is None:
+        index = random.randint(0, len(seq))
+    mod = index % 3 if use_mod else 0
 
     if index < pivot:
-        return seq[index:index+k]
+        return seq[index+mod:index+mod+k]
     else:
-        return seq[index-k:index]
+        return seq[index-mod-k:index-mod]
 
 
-def encode_base_seq(seq, transpose=False):
+def encode_base_seq(seq):
     encoding = np.zeros((len(seq), 4))
 
     for base, e in zip(seq, encoding):
         e[BASE_ENCODINGS[base]] = 1
-
-    if transpose:
-        encoding = np.transpose(encoding)
 
     return encoding
 
@@ -261,7 +260,7 @@ def get_codon_encoding_dict():
     return dict(zip(codons_list, codons_indices))
 
 
-def encode_codon_seq(seq, encoding_dict=None, transpose=False):
+def encode_codon_seq(seq, encoding_dict=None):
     if encoding_dict is None:
         encoding_dict = get_codon_encoding_dict()
 
@@ -270,10 +269,15 @@ def encode_codon_seq(seq, encoding_dict=None, transpose=False):
         k_mer = seq[i:i+3]
         encoding[i][encoding_dict[k_mer]] = 1
 
-    if transpose:
-        encoding = np.transpose(encoding)
-
     return encoding
+
+
+def encode_base_occurrence(seq):
+    x = np.zeros(4)
+    for base in seq:
+        x[BASE_ENCODINGS[base]] += 1
+
+    return x
 
 
 def encode_significance_dict(significance_dict):
@@ -381,7 +385,7 @@ def main():
     ref_gene = preprocess_gene_data(gene_location)
 
     mutations_keys = list(mutations_dict.keys())
-    seq_save_location = os.path.join(gene_dir, 'mutations/np_test/')
+    seq_save_location = os.path.join(gene_dir, 'mutations/np_500/')
     mutation_info_list = []
 
     for key in mutations_keys:
@@ -401,7 +405,9 @@ def main():
 
             mutation_info_list.append(mutation_info)
 
-            seq_encoding = encode_base_seq(seq)
+            seq_k_mer = random_mutated_k_mer(seq, mutation_info, 500, ref_gene['start_index'])
+            seq_encoding = encode_base_seq(seq_k_mer)
+
             mutations_list.append(seq_encoding)
 
             current_save_location = os.path.join(seq_save_location, key + '.npy')
