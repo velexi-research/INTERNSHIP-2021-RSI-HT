@@ -1,0 +1,16 @@
+[
+    {
+        "k": 500,
+        "test_size": 0.1,
+        "n_estimators": 100,
+        "max_depth": 5,
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "apc": "324",
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    }
+]
