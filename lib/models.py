@@ -21,7 +21,9 @@ def load_model_and_dataset(checkpoint_path):
         else:
             encoding = dataset_utils.encode_base_seq
 
-        dataset = datasets.Genes('../data', k=500, genes_dict=results['args_dict']['genes_dict'], encoding=encoding)
+        k = results['args_dict']['k'] if 'k' in results['args_dict'].keys() else 500
+
+        dataset = datasets.Genes('../data', k=k, genes_dict=results['args_dict']['genes_dict'], encoding=encoding)
     else:
         dataset = datasets.HistoneOccupancy(location='../data/h3_occupancy')
 
@@ -83,8 +85,8 @@ def plot_confusion_matrix(cm, classes=datasets.DEFAULT_GENES_DICT):
 
 
 def save_confusion_matrices_plots(results_location):
-    for checkpoint_location in os.listdir('../results'):
-        model, dataset = load_model_and_dataset(os.path.join('../results', checkpoint_location))
+    for checkpoint_location in os.listdir(results_location):
+        model, dataset = load_model_and_dataset(os.path.join(results_location, checkpoint_location))
 
         _, test_set = dataset_utils.split_dataset(dataset, test_size=0.1, shuffle=True)
         test_labels = torch.from_numpy(np.array(test_set.y))
@@ -92,20 +94,28 @@ def save_confusion_matrices_plots(results_location):
 
         cm = construct_confusion_matrix(y_true=test_labels.numpy(), y_pred=y_pred)
         plot_confusion_matrix(cm=cm, classes=dataset.genes_dict)
-        plt.savefig('../reports/cm/' + results_location[:-3] + '.png')
+        plt.savefig('../reports/cm/' + checkpoint_location[:-3] + '.png')
 
 
-def one_hot_autoencoder_output(output):
+def one_hot_encoding(output):
     output = output.transpose(1, 2)
     x = torch.zeros_like(output)
 
+    one_hot_indices = torch.sum(output, 2)
+
     for batch_index in range(output.size(0)):
         for encoding_index in range(output.size(1)):
-            one_hot_index = int(torch.sum(output[batch_index][encoding_index]).item()) - 1
-            x[batch_index][encoding_index][one_hot_index] = 1
+            one_hot_index = int(one_hot_indices[batch_index][encoding_index].item())
+
+            if one_hot_index != 0:
+                x[batch_index][encoding_index][one_hot_index-1] = 1
 
     x = x.transpose(1, 2)
     return x
+
+
+def one_hot_decoding(encoding):
+    return torch.argmax(encoding, dim=1)
 
 
 class TaxonomyCNN(nn.Module, ABC):
@@ -160,21 +170,15 @@ class Autoencoder(nn.Module, ABC):
 
     def forward(self, x):
         x = self.encoder_conv(x)
-        x = F.relu(x)
+        x = F.leaky_relu(x)
         x = self.encoder_pool(x)
 
         x = self.encoder_dense(x)
-
-        bottleneck = F.relu(x)
+        bottleneck = F.leaky_relu(x)
 
         x = self.decoder_dense(bottleneck)
-        x = F.relu(x)
+        x = F.leaky_relu(x)
 
         x = self.decoder_conv(x)
-        x = F.relu(x)
 
-        x = torch.sign(x)
-        x = F.relu(x)
-        output = one_hot_autoencoder_output(x)
-
-        return output, torch.flatten(bottleneck, 1)
+        return x
