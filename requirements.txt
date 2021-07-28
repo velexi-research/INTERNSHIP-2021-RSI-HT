@@ -1,6 +1,6 @@
 # Data science analysis packages
 matplotlib
-numpy~=1.21.0
+numpy
 pandas
 scikit-learn
 scipy
@@ -11,7 +11,7 @@ torch
 biopython
 
 # Web querying
-requests~=2.26.0
+requests
 
 # Data science workflow packages
 # dvc
@@ -19,7 +19,7 @@ requests~=2.26.0
 
 # Interactive environments
 # ipython
-jupyterlab
+# jupyterlab
 
 # Basic utility packages
 # PyYAML
@@ -35,3 +35,8 @@ jupyterlab
 # pytest-pylint
 # pytest-xdist
 # radon
+
+seaborn
+boto3
+shap
+deeplift
