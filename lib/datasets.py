@@ -31,10 +31,11 @@ class Mutations(torch.utils.data.Dataset):
 
 
 class Genes(torch.utils.data.Dataset):
-    def __init__(self, location, k, encoding=encode_base_seq, genes_dict=None):
+    def __init__(self, location, k, encoding=encode_base_seq, genes_dict=None, transpose_output=True):
         self.location = location
         self.gene_names = os.listdir(location)
         self.encoding = encoding
+        self.transpose_output = transpose_output
 
         if genes_dict is None:
             genes_dict = DEFAULT_GENES_DICT
@@ -72,7 +73,10 @@ class Genes(torch.utils.data.Dataset):
             for record in fasta_records:
                 seq = record.seq
 
-        seq = self.encoding(seq, transpose=True)
+        seq = self.encoding(seq)
+        if self.transpose_output:
+                seq = np.transpose(seq)
+
         seq = torch.from_numpy(np.array(seq).astype('float32'))
 
         return seq
