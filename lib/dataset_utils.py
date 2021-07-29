@@ -272,10 +272,24 @@ def encode_codon_seq(seq, encoding_dict=None):
     return encoding
 
 
-def encode_base_occurrence(seq):
-    x = np.zeros(4)
-    for base in seq:
-        x[BASE_ENCODINGS[base]] += 1
+def encode_base_occurrence(seq, subset_size=None):
+    if subset_size is not None:
+        num_subsets = len(seq) // subset_size
+
+        x = np.zeros((num_subsets, 4))
+
+        subset_index = -1
+        for base_index, base in enumerate(seq):
+            if base_index % subset_size == 0:
+                subset_index += 1
+            x[subset_index, BASE_ENCODINGS[base]] += 1
+
+        return x
+
+    else:
+        x = np.zeros(4)
+        for base in seq:
+            x[BASE_ENCODINGS[base]] += 1
 
     return x
 
