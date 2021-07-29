@@ -112,7 +112,9 @@ class HistoneOccupancy(torch.utils.data.Dataset):
             for record in fasta_records:
                 seq = record.seq
 
-        seq = self.encoding(seq, transpose=True)
-        seq = torch.from_numpy(np.array(seq).astype('float32'))
+        seq = self.encoding(seq)
+        seq = np.transpose(seq)
+
+        seq = torch.from_numpy(seq.astype('float32'))
 
         return seq
