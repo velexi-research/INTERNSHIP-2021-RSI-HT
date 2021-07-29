@@ -278,7 +278,7 @@ def encode_codon_seq_series(seq, encoding_dict=None):
 
     encoding = np.zeros((len(seq) - 2, 3*len(encoding_dict.keys())))
 
-    for i in range(0, len(seq)-2, 3):
+    for i in range(0, len(seq)-3, 3):
         for j in range(3):
             k_mer = seq[i+j:i+j+3]
             encoding[i][encoding_dict[k_mer]+64*j] = 1
