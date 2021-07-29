@@ -118,6 +118,19 @@ def one_hot_decoding(encoding):
     return torch.argmax(encoding, dim=1)
 
 
+def weight_averaging(model, previous_parameters):
+    current_parameters = model.parameters()
+
+    for p_current, p_previous in zip(current_parameters, previous_parameters):
+        if p_current.requires_grad:
+            with torch.no_grad():
+                new_value = (p_current + p_previous)/2
+                p_current.copy_(new_value)
+
+    model.zero_grad()
+    return model
+
+
 class TaxonomyCNN(nn.Module, ABC):
     def __init__(self, dataset, output_channels=2, kernel_size=2):
         super(TaxonomyCNN, self).__init__()
