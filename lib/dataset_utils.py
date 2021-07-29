@@ -236,15 +236,6 @@ def random_k_mer(seq, k, use_mod=False, index=None):
         return seq[index-mod-k:index-mod]
 
 
-def encode_base_seq(seq):
-    encoding = np.zeros((len(seq), 4))
-
-    for base, e in zip(seq, encoding):
-        e[BASE_ENCODINGS[base]] = 1
-
-    return encoding
-
-
 def get_codon_encoding_dict():
     bases = list(BASE_ENCODINGS.keys())
     num_bases = len(bases)
@@ -258,6 +249,15 @@ def get_codon_encoding_dict():
 
     codons_indices = [x for x in range(len(codons_list))]
     return dict(zip(codons_list, codons_indices))
+
+
+def encode_base_seq(seq):
+    encoding = np.zeros((len(seq), 4))
+
+    for base, e in zip(seq, encoding):
+        e[BASE_ENCODINGS[base]] = 1
+
+    return encoding
 
 
 def encode_codon_seq(seq, encoding_dict=None):
