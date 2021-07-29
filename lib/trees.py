@@ -7,7 +7,7 @@ import datetime
 import dataset_utils
 import datasets
 
-with open('../reports/parameters_random_forest.json', 'r') as file:
+with open('../reports/parameters_trees.json', 'r') as file:
     args_dict = json.load(file)
 
 for i in range(len(args_dict)):
