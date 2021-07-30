@@ -80,24 +80,30 @@ def general_plot(subplots_location):
 
 
 # histone_results_path = 'histone_29-07-2021_17:28:49.pt'
-# genes_results_mode_3 = 'cnn_30-07-2021_00:55:51.pt'
-# genes_results_codon_series = 'cnn_29-07-2021_18:07:13.pt'
 # genes_results = 'cnn_28-07-2021_18:12:38.pt'
+# genes_results_mod_3 = 'cnn_30-07-2021_00:55:51.pt'
+# genes_results_codon_series = 'cnn_29-07-2021_18:07:13.pt'
 
 results_location = 'cnn_29-07-2021_18:07:13.pt'
 results = torch.load(os.path.join('../results', results_location))
 args_dict = results['args_dict']
 plot_batch_size = 25
 
-if args_dict['k'] == 500 and False:
+decode = False
+if results['state_dict']['conv1.weight'].size(1) == 4:
     encoding = dataset_utils.encode_base_seq
+elif results['state_dict']['conv1.weight'].size(1) == 64:
+    encoding = dataset_utils.encode_codon_seq
+    decode = True
 else:
     encoding = dataset_utils.encode_codon_seq_series
+    decode = True
 
 if 'histone' in results_location:
-    dataset = datasets.HistoneOccupancy('../data/h3_occupancy', encoding=dataset_utils.encode_codon_seq_series)
+    dataset = datasets.HistoneOccupancy('../data/h3_occupancy', encoding=encoding)
 else:
-    dataset = datasets.Genes('../data', k=args_dict['k'], genes_dict=results['args_dict']['genes_dict'], encoding=encoding)
+    dataset = datasets.Genes('../data', k=args_dict['k'],
+                             genes_dict=results['args_dict']['genes_dict'], encoding=encoding)
 
 dataset, test_set = dataset_utils.split_dataset(dataset, test_size=0.1, shuffle=True)
 test_labels = torch.from_numpy(np.array(test_set.y))
@@ -120,6 +126,7 @@ test_tensor = np.expand_dims(np.transpose(test_set_tensor[1].numpy()).transpose(
 shap_values = np.sum(shap_values, axis=-1)[:, :, None] * test_tensor
 
 for values in shap_values:
-    values_decoded = decode_codon_seq_values(values, original_k=args_dict['k'])
-    for values_decoded_batch in np.split(values_decoded, args_dict['k']/plot_batch_size):
-        viz_sequence.plot_weights(values_decoded_batch, subticks_frequency=1)
+    if decode:
+        values = decode_codon_seq_values(values, original_k=args_dict['k'])
+    for values_batch in np.split(values, args_dict['k']/plot_batch_size):
+        viz_sequence.plot_weights(values_batch, subticks_frequency=1)
