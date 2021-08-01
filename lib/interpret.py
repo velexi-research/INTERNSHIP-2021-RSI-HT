@@ -84,7 +84,7 @@ def general_plot(subplots_location):
 # genes_results_mod_3 = 'cnn_30-07-2021_00:55:51.pt'
 # genes_results_codon_series = 'cnn_29-07-2021_18:07:13.pt'
 
-results_location = 'cnn_29-07-2021_18:07:13.pt'
+results_location = 'cnn_28-07-2021_02:57:06.pt'
 results = torch.load(os.path.join('../results', results_location))
 args_dict = results['args_dict']
 plot_batch_size = 25

@@ -14,8 +14,7 @@ for i in range(len(args_dict)):
     current_time = datetime.datetime.now().strftime('%d-%m-%Y_%H:%M:%S')
     save_location = '../results/trees/' + current_time + '.pkl'
 
-    train_set = datasets.Genes('../data', k=args_dict[i]['k'], genes_dict=args_dict[i]['genes_dict'],
-                               encoding=dataset_utils.encode_base_occurrence, transpose_output=False)
+    train_set = datasets.Genes('../data', args_dict[i], transpose_output=False)
     train_set, test_set = dataset_utils.split_dataset(train_set, test_size=0.1, shuffle=True)
 
     x_train = []
