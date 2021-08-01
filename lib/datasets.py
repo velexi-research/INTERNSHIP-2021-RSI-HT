@@ -1,8 +1,9 @@
 import torch
 import numpy as np
 from Bio import SeqIO
-from dataset_utils import split_dataset, encode_base_seq
+import dataset_utils
 import os
+import random
 
 
 DEFAULT_GENES_DICT = {
@@ -31,15 +32,19 @@ class Mutations(torch.utils.data.Dataset):
 
 
 class Genes(torch.utils.data.Dataset):
-    def __init__(self, location, k, encoding=encode_base_seq, genes_dict=None, transpose_output=True):
+    def __init__(self, location, args_dict, transpose_output=True):
         self.location = location
         self.gene_names = os.listdir(location)
-        self.encoding = encoding
         self.transpose_output = transpose_output
 
-        if genes_dict is None:
-            genes_dict = DEFAULT_GENES_DICT
-        self.genes_dict = genes_dict
+        self.encoding = dataset_utils.encode_base_seq
+        self.genes_dict = args_dict['genes_dict']
+
+        if 'encoding' in args_dict.keys():
+            if args_dict['encoding'] == 'sequential':
+                self.encoding = dataset_utils.encode_codon_seq_series
+
+        self.shuffle = False
 
         self.x = []
         self.y = []
@@ -50,12 +55,12 @@ class Genes(torch.utils.data.Dataset):
             if gene not in self.genes_dict.keys():
                 continue
 
-            k_mers_location = os.path.join(location, gene + '/k_mers/' + str(k))
+            k_mers_location = os.path.join(location, gene + '/k_mers/' + str(args_dict['k']))
             num_k_mers = 0
             for k_mer in os.listdir(k_mers_location):
                 self.x.append(os.path.join(k_mers_location, k_mer))
                 num_k_mers += 1
-            self.y.append([gene_index,]*num_k_mers)
+            self.y.append([gene_index]*num_k_mers)
 
             gene_index += 1
 
@@ -73,9 +78,14 @@ class Genes(torch.utils.data.Dataset):
             for record in fasta_records:
                 seq = record.seq
 
+        if self.shuffle:
+            seq_list = list(seq)
+            random.shuffle(seq_list)
+            seq = ''.join(seq_list)
+
         seq = self.encoding(seq)
         if self.transpose_output:
-                seq = np.transpose(seq)
+            seq = np.transpose(seq)
 
         seq = torch.from_numpy(np.array(seq).astype('float32'))
 
@@ -83,7 +93,7 @@ class Genes(torch.utils.data.Dataset):
 
 
 class HistoneOccupancy(torch.utils.data.Dataset):
-    def __init__(self, location, encoding=encode_base_seq):
+    def __init__(self, location, encoding=dataset_utils.encode_base_seq):
         self.location = location
         self.classes = os.listdir(location)
         self.encoding = encoding
