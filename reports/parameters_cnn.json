@@ -1,195 +1,13 @@
 [
     {
         "batch_size": 5,
-        "epochs": 100,
+        "epochs": 5,
         "lr": 0.001,
         "kernel_size": 3,
-        "k": 125,
-        "genes_dict": {
-            "brca1": "672",
-            "apc": "324"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 250,
-        "genes_dict": {
-            "brca1": "672",
-            "apc": "324"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 1000,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 250,
-        "genes_dict": {
-            "brca1": "672",
-            "apc": "324"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 250,
-        "genes_dict": {
-            "brca1": "672",
-            "apc": "324"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 125,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 250,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 1000,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 10,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 125,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 10,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 250,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 10,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 1000,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 2,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 125,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 2,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 250,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-    {
-        "batch_size": 2,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 1000,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675"
-        }
-    },
-     {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 125,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675",
-            "apc": "324",
-            "pten": "5728",
-            "vhl": "7428"
-        }
-    },
-     {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 250,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675",
-            "apc": "324",
-            "pten": "5728",
-            "vhl": "7428"
-        }
-    },
-     {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 1000,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675",
-            "apc": "324",
-            "pten": "5728",
-            "vhl": "7428"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 125,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": false,
+        "encoding": "sequential",
         "genes_dict": {
             "brca1": "672",
             "brca2": "675",
@@ -201,44 +19,288 @@
     },
     {
         "batch_size": 5,
-        "epochs": 100,
+        "epochs": 5,
         "lr": 0.001,
         "kernel_size": 3,
-        "k": 250,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": false,
+        "encoding": "sequential",
         "genes_dict": {
             "brca1": "672",
-            "brca2": "675",
-            "apc": "324",
-            "pten": "5728",
-            "vhl": "7428",
-            "cdkn2a": "1029"
+            "brca2": "675"
         }
     },
     {
         "batch_size": 5,
-        "epochs": 100,
+        "epochs": 5,
         "lr": 0.001,
         "kernel_size": 3,
-        "k": 1000,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": false,
+        "encoding": "sequential",
         "genes_dict": {
             "brca1": "672",
-            "brca2": "675",
-            "apc": "324",
-            "pten": "5728",
-            "vhl": "7428",
-            "cdkn2a": "1029"
-        }
-    },
-    {
-        "batch_size": 5,
-        "epochs": 100,
-        "lr": 0.001,
-        "kernel_size": 3,
-        "k": 125,
-        "genes_dict": {
-            "brca1": "672",
-            "brca2": "675",
             "apc": "324"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 5,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": false,
+        "encoding": "sequential",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 5,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": false,
+        "encoding": "sequential",
+        "genes_dict": {
+            "brca2": "675",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+   {
+        "batch_size": 2,
+        "epochs": 5,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": false,
+        "encoding": "sequential",
+        "genes_dict": {
+            "brca2": "675",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 20,
+        "epochs": 5,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": false,
+        "encoding": "sequential",
+        "genes_dict": {
+            "brca2": "675",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 5,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": false,
+        "encoding": "sequential",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "apc": "324",
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 5,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": true,
+        "encoding": "sequential",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "apc": "324",
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 5,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": true,
+        "encoding": "sequential",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "apc": "324",
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": false,
+        "encoding": "standard",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "apc": "324",
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": true,
+        "encoding": "standard",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "apc": "324",
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": true,
+        "encoding": "standard",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675",
+            "apc": "324",
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": false,
+        "encoding": "standard",
+        "genes_dict": {
+            "brca1": "672",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": true,
+        "encoding": "standard",
+        "genes_dict": {
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+
+     {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": true,
+        "encoding": "standard",
+        "genes_dict": {
+            "brca1": "672",
+            "brca2": "675"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": false,
+        "encoding": "standard",
+        "genes_dict": {
+            "pten": "5728",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": true,
+        "test_shuffle": false,
+        "encoding": "standard",
+        "genes_dict": {
+            "brca2": "672",
+            "vhl": "7428",
+            "cdkn2a": "1029"
+        }
+    },
+    {
+        "batch_size": 5,
+        "epochs": 50,
+        "lr": 0.001,
+        "kernel_size": 3,
+        "k": 500,
+        "train_shuffle": false,
+        "test_shuffle": true,
+        "encoding": "standard",
+        "genes_dict": {
+            "vhl": "7428",
+            "cdkn2a": "1029"
         }
     }
 ]
